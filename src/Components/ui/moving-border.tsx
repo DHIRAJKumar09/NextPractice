@@ -74,15 +74,14 @@ export function Button<C extends React.ElementType = "button">({
 export const MovingBorder = ({
   children,
   duration = 2000,
-  rx,
-  ry,
+  rx = "0",
+  ry = "0",
   ...otherProps
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode;  // Ensure 'children' is correctly typed as ReactNode
   duration?: number;
   rx?: string;
   ry?: string;
-  [key: string]: any; // Consider using a more specific type if possible
 }) => {
   const pathRef = useRef<SVGRectElement | null>(null);
   const progress = useMotionValue<number>(0);
@@ -97,11 +96,11 @@ export const MovingBorder = ({
 
   const x = useTransform(
     progress,
-    (val) => pathRef.current?.getPointAtLength(val).x
+    (val) => (pathRef.current ? pathRef.current.getPointAtLength(val).x : 0)
   );
   const y = useTransform(
     progress,
-    (val) => pathRef.current?.getPointAtLength(val).y
+    (val) => (pathRef.current ? pathRef.current.getPointAtLength(val).y : 0)
   );
 
   const transform = useMotionTemplate`translateX(${x}px) translateY(${y}px) translateX(-50%) translateY(-50%)`;
@@ -114,7 +113,7 @@ export const MovingBorder = ({
         className="absolute h-full w-full"
         width="100%"
         height="100%"
-        {...otherProps}
+        {...otherProps}  // Spread the remaining valid props here
       >
         <rect
           fill="none"
